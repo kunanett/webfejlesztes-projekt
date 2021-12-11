@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+>
+<ui:composition template="layout.xhtml">
+    <ui:define name="content">
+        <h:form id="beerForm">
+            <p:panel header="Beer Info" id="beerInfoPanel">
+                <h:panelGrid columns="2">
+                    <p:outputLabel for="name" value="Beer Name: "/>
+                    <p:inputText id="name" size="40"
+                                 value="#{beerController.beer.name}" required="true"
+                                 requiredMessage="Please enter beer name "/>
+                    <p:outputLabel for="alcoholLevel" value="Alcohol level: "/>
+                    <p:inputNumber id="alcoholLevel" size="40"
+                                   value="#{beerController.beer.alcoholLevel}"/>
+                    <p:outputLabel for="price" value="Price : "/>
+                    <p:inputNumber id="price"
+                                   value="#{beerController.beer.price}" size="40"
+                                   required="true" label="Price">
+                    </p:inputNumber>
+                    <p:outputLabel for="beerCategory" value="Category "/>
+                    <p:selectOneMenu id="beerCategory"
+                                     value="#{beerController.beer.beerCategory}"
+                                     style="width:150px" converter="#{beerCategoryConverter}">
+                        <f:selectItems value="#{beerController.beerCategories}"
+                                       var="beerCategory" itemLabel="#{beerCategory.name}"
+                                       itemValue="#{beerCategory}"/>
+                    </p:selectOneMenu>
+                    <h:commandButton value="#{beerController.actionLabel}"
+                                     action="#{beerController.saveBeer}">
+                        <f:ajax execute="beerForm" render="beerlist beerInfoPanel"/>
+                    </h:commandButton>
+                </h:panelGrid>
+            </p:panel>
+            <p:panel header="Beer List" id="beerlist">
+                <p:dataTable id="table" var="beer"
+                             value="#{beerController.beerList}">
+                    <p:column>
+                        <f:facet name="header">Id</f:facet>
+                        <h:outputText value="#{beer.id}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputText value="#{beer.name}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Alcohol level (%) </f:facet>
+                        <h:outputText value="#{beer.alcoholLevel}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Price (HUF) </f:facet>
+                        <h:outputText value="#{beer.price}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Category </f:facet>
+                        <h:outputText value="#{beer.beerCategory.name}"/>
+                    </p:column>
+                    <p:column id="action">
+                        <f:facet name="header">Action</f:facet>
+                        <h:commandLink value="Edit"
+                                       action="#{beerController.edit(beer)}">
+                            <f:ajax execute="action" render="beerForm"/>
+                        </h:commandLink> /
+                        <h:commandLink value="Delete"
+                                       action="#{beerController.delete(beer)}">
+                            <f:ajax execute="action" render="table"/>
+                        </h:commandLink>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>
